@@ -1,0 +1,80 @@
+---
+title: Coffee survey
+output: html_fragment
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, error=FALSE)
+
+```
+
+```{css}
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f5ebe0;
+    color: #3e2723;
+    margin: 40px;
+}
+
+h1 {
+    color: #4e342e;
+    text-align: center;
+}
+
+p {
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+
+```
+
+## What's going on with this data?
+
+This bar chart shows the time taken on average to make each coffee type in minutes. The longest being 7 minutes by Mocha and the quickest being 2 minutes from the espresso. 
+
+```{r}
+library(tidyverse)
+csv_file <- "https://docs.google.com/spreadsheets/d/e/2PACX-1vRZFQTrRxt4zgYvwvtUPg0XRgOA1KKS72fAdcsh_CzGsppoDe7eHIM9qypNXo9bOnnO357OGC6r2UsN/pub?output=csv"
+logged_data <- read_csv(csv_file) %>%
+  rename(
+    coffee = 2,
+    size = 3,
+    time_taken = 4
+  )
+
+#glimpse(logged_data)
+
+#max(logged_data$time_taken)
+#min(logged_data$time_taken)
+
+
+avg_time <- logged_data %>%
+  group_by(coffee) %>%
+  summarise(avg_time = mean(time_taken, na.rm = TRUE))
+  #calculating average time per coffee variant  
+
+
+#bar1
+avg_time %>%
+  ggplot(aes(x = reorder(coffee, avg_time), y = avg_time, fill = coffee)) + 
+  geom_bar(stat = "identity") +
+  labs(title = "Time taken to make each coffee (in minutes)")
+  
+```
+
+This bar chart shows the most ordered coffee sizes, with the most common being large and the least being small. 
+
+
+```{r}
+
+#bar2
+logged_data %>%
+  ggplot() +
+  geom_bar(aes(x = size, fill = size)) +
+  labs(title = "Most ordered coffee sizes",
+       x = "Size",
+       y = "Number")
+```
+
+
