@@ -9,7 +9,61 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, error=FALSE)
 ```
+```{r}
+library(tidyverse)
+library(stringr)
 
+logged_data <- read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vRZFQTrRxt4zgYvwvtUPg0XRgOA1KKS72fAdcsh_CzGsppoDe7eHIM9qypNXo9bOnnO357OGC6r2UsN/pub?output=csv")
+
+plot1 <- ggplot(data = logged_data) +
+  geom_bar(aes(x = `What coffee was ordered?`), fill = "chocolate") +
+  labs(
+    title = "What was the most ordered coffee?", 
+    x = "Coffees",
+    y = "Number of orders") +
+  theme_minimal()
+
+avg_time_per_coffee <- logged_data %>%
+  group_by(`What coffee was ordered?`) %>%
+  summarise(avg_time = mean(`How long did it take the barista to make this coffee?`, na.rm = TRUE)) %>%
+  arrange(desc(avg_time))
+
+plot2 <- ggplot(avg_time_per_coffee, aes(x = `What coffee was ordered?`, y = avg_time)) +
+  geom_bar(stat = "identity", fill = "darkgreen") +
+  labs(
+    title = "Which coffee is made the fastest?",
+    x = "Coffees",
+    y = "Time taken (in minutes)"
+  )
+
+
+
+extras_by_coffee <- logged_data %>%
+  filter(!is.na(`Were additional items ordered?`)) %>%
+  mutate(extra_ordered = str_detect(`Were additional items ordered?`, regex("yes", ignore_case = TRUE))) %>%
+  group_by(`What coffee was ordered?`) %>%
+  summarise(extra_items_count = sum(extra_ordered, na.rm = TRUE),
+            total_orders = n(),
+            proportion_with_extras = extra_items_count / total_orders) %>%
+  arrange(desc(extra_items_count))
+
+plot3 <- ggplot(extras_by_coffee, aes(x = reorder(`What coffee was ordered?`, extra_items_count), y = extra_items_count)) +
+  geom_col(fill = "darkorchid") +
+  labs(
+    title = "Coffee Types with Most Extra Items Ordered",
+    x = "Coffee Type",
+    y = "Number of Orders with Extras"
+  ) +
+  coord_flip() +
+  theme_minimal()
+
+ggsave("plot1.png", plot = plot1)
+ggsave("plot2.png", plot = plot2)
+ggsave("plot3.png", plot = plot3)
+
+
+
+```
 ```{js}
 $(function() {
   $(".level2").css('visibility', 'hidden');
