@@ -1,0 +1,72 @@
+---
+title: Interesting data about Coffee
+author: Christian Solomon
+output: html_document
+---
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, error=FALSE)
+```
+
+```{js}
+$(function() {
+  $(".level2").css('visibility', 'hidden');
+  $(".level2").first().css('visibility', 'visible');
+  $(".container-fluid").height($(".container-fluid").height() + 300);
+  $(window).on('scroll', function() {
+    $('h2').each(function() {
+      var h2Top = $(this).offset().top - $(window).scrollTop();
+      var windowHeight = $(window).height();
+      if (h2Top >= 0 && h2Top <= windowHeight / 2) {
+        $(this).parent('div').css('visibility', 'visible');
+      } else if (h2Top > windowHeight / 2) {
+        $(this).parent('div').css('visibility', 'hidden');
+      }
+    });
+  });
+})
+```
+
+```{css echo=FALSE}
+.figcaption {display: none}
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f5ebe0;
+    color: #3e2723;
+    margin: 40px;
+}
+
+h1 {
+    color: #4e342e;
+    text-align: center;
+}
+
+p {
+    font-size: 16px;
+    line-height: 1.6;
+}
+```
+
+
+I was curious about what the most common coffee orders were, which coffee takes the longest to make, and the coffee that gets the most extra items ordered. The graphs below show interesting information about peoples coffee orders.  
+
+
+
+## This graph shows the most ordered coffees
+
+We can see that the latte was the most ordered coffee with there being 8 orders, whilst the least ordered coffees were the Iced Latte and the Macchiato.
+
+![](plot1.png)
+
+## This graph shows which coffee was made the quickest 
+
+We see that the coffee made the quickest was the espresso at 2 minutes whilst the coffees that took the longest were the Iced Latte and the Mocha.
+![](plot2.png)
+
+## This graph shows which coffees had the most extra items ordered
+
+We see that the coffee with the most extra items ordered was the Latte whilst the Espresso and the Black Coffee did not have any extra items ordered.
+![](plot3.png)
+
